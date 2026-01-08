@@ -18,3 +18,7 @@ Aura Glow is an edge-first virtual try-on architecture (hair color, makeup, kera
 ## License & attribution
 - License: AGPL-3.0-or-later (see \LICENSE\)
 - Preserve \NOTICE\ and existing copyright notices.
+
+## Quickstart
+See: docs/QUICKSTART.md
+
