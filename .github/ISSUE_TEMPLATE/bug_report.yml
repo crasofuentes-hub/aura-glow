@@ -1,0 +1,35 @@
+﻿name: Bug report
+description: Report a reproducible bug
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened vs. what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      description: Exact steps to reproduce.
+      placeholder: "1) ... 2) ... 3) ..."
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / output
+      description: Paste relevant logs (no secrets).
+      render: shell
+    validations:
+      required: false
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: OS, device, PowerShell version, etc.
+    validations:
+      required: false
