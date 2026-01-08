@@ -1,0 +1,52 @@
+﻿name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  windows-msvc:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure (CMake)
+        run: |
+          cmake -S . -B build/ci -G "Visual Studio 17 2022" -A x64 -DAURAGLOW_BUILD_DEMO=ON
+
+      - name: Build (Release)
+        run: |
+          cmake --build build/ci --config Release
+
+      - name: Verify docs (strict)
+        shell: pwsh
+        run: |
+          pwsh -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1 -Strict
+
+      - name: Run demo
+        shell: pwsh
+        run: |
+          # Encuentra el exe Release sin asumir ruta fija
+          $exe = Get-ChildItem -Path build/ci -Recurse -Filter auraglow_demo.exe -File |
+                 Where-Object { $_.FullName -match "\\Release\\" } |
+                 Select-Object -First 1 -ExpandProperty FullName
+          if(-not $exe){ throw "auraglow_demo.exe not found under build/ci" }
+          Push-Location (Split-Path -Parent $exe)
+          & $exe
+          Pop-Location
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: auraglow-windows-release
+          path: |
+            build/ci/**/Release/auraglow_demo.exe
+            build/ci/**/Release/*.pdb
+            build/ci/**/Release/*.lib
+            build/ci/**/Release/*.exp
+            build/ci/**/Release/*.ilk
+            **/out_before.ppm
+            **/out_after.ppm
