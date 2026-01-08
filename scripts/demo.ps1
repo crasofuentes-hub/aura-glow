@@ -1,4 +1,15 @@
-﻿Set-StrictMode -Version Latest
+﻿# --- Ensure MSVC environment (auto-bootstrap) ---
+if(-not (Get-Command cl.exe -ErrorAction SilentlyContinue)){
+  $vsdev = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat"
+  if(Test-Path $vsdev){
+    $here = (Get-Location).Path
+    cmd /c "`"$vsdev`" -arch=x64 -host_arch=x64 && cd /d `"$here`" && pwsh -NoProfile -ExecutionPolicy Bypass -File `"$here\scripts\demo.ps1`""
+    exit $LASTEXITCODE
+  }
+  throw "MSVC not found in PATH and VsDevCmd.bat not found."
+}
+# ----------------------------------------------
+Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 function Fail([string]$m){ Write-Error $m; exit 1 }
@@ -27,3 +38,4 @@ if(-not (Test-Path $exe)){ Fail "Demo executable not found." }
 if($LASTEXITCODE -ne 0){ Fail "Engine demo failed." }
 
 Ok "OK: demo ran successfully."
+
