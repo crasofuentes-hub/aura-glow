@@ -1,5 +1,7 @@
 ﻿# Aura Glow â€” Edge-First Virtual Try-On (On-Device) â€¢ AGPL-3.0-or-later
 
+![CI](../../actions/workflows/ci.yml/badge.svg)
+
 ![CI](https://github.com/crasofuentes-hub/aura-glow/actions/workflows/ci.yml/badge.svg)
 ![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL%203.0-blue.svg)
 
@@ -21,4 +23,5 @@ Aura Glow is an edge-first virtual try-on architecture (hair color, makeup, kera
 
 ## Quickstart
 See: docs/QUICKSTART.md
+
 
