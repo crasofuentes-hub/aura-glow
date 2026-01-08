@@ -81,14 +81,13 @@ int main() {
     return 2;
   }
 
-  WritePPM("out_before.ppm", std::vector<uint8_t>(rgba.begin(), rgba.end()), w, h); // after dye (kept for simplicity)
+  WritePPM("out_before.ppm", rgba, w, h); // after dye (kept for simplicity)
   std::cout << "OK: wrote out_before.ppm (PPM)\n";
-
   // Write "after" (post-effect) frame for visual diff
-  if(!WritePpm("out_after.ppm", frame, W, H)){
-    std::cerr << "WARN: could not write out_after.ppm\n";
-  } else {
-    std::cout << "OK: wrote out_after.ppm (PPM)\n";
-  }  if(!WritePpmLocal("out_after.ppm", rgba.data(), kW, kH)){ std::cerr << "WARN: could not write out_after.ppm" << std::endl; } else { std::cout << "OK: wrote out_after.ppm (PPM)" << std::endl; }
+  WritePPM("out_after.ppm", rgba, w, h);
+  std::cout << "OK: wrote out_after.ppm (PPM)\n";
   return 0;
 }
+
+
+
