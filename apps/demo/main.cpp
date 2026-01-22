@@ -19,19 +19,7 @@ static void WritePPM(const std::string& path, const std::vector<uint8_t>& rgba, 
 #include <fstream>
 
 // Minimal, dependency-free PPM (P6) writer for RGB24 buffers.
-static bool WritePpmLocal(const char* path, const unsigned char* rgb, int width, int height){
-  if(!path || !rgb || width <= 0 || height <= 0) return false;
-  std::ofstream f(path, std::ios::binary);
-  if(!f) return false;
-  f << "P6\n" << width << " " << height << "\n255\n";
-  f.write(reinterpret_cast<const char*>(rgb), static_cast<std::streamsize>(width) * height * 3);
-  return static_cast<bool>(f);
-}
-
 int main() {
-  const int kW = 256;
-  const int kH = 256;
-
   const int w = 256, h = 256;
 
   // Synthetic RGBA frame (gradient)
@@ -81,13 +69,16 @@ int main() {
     return 2;
   }
 
-  WritePPM("out_before.ppm", rgba, w, h); // after dye (kept for simplicity)
+  WritePPM("artifacts/out_before.ppm", rgba, w, h); // after dye (kept for simplicity)
   std::cout << "OK: wrote out_before.ppm (PPM)\n";
   // Write "after" (post-effect) frame for visual diff
-  WritePPM("out_after.ppm", rgba, w, h);
+  WritePPM("artifacts/out_after.ppm", rgba, w, h);
   std::cout << "OK: wrote out_after.ppm (PPM)\n";
   return 0;
 }
+
+
+
 
 
 

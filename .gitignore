@@ -1,29 +1,14 @@
-﻿# OS / IDE
-.DS_Store
-Thumbs.db
-.vscode/
-.idea/
-
-# Dart/Flutter
-.dart_tool/
-.packages
-.pub-cache/
+﻿# Build output
 build/
-**/.flutter-plugins
-**/.flutter-plugins-dependencies
+out/
+*.obj
+*.pdb
+*.ilk
+*.idb
+*.log
+*.tlog
+*.vcxproj.user
+.vs/
 
-# Native builds
-engine/build/
-engine/.cache/
-*.so
-*.dll
-*.dylib
-*.a
-*.o
-
-# Secrets
-.env
-.env.*
-*.keystore
-*.p12
-*.pem
+# Local artifacts (uploaded via GitHub Releases instead)
+artifacts/*.zip
