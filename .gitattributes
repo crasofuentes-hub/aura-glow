@@ -1,20 +1,2 @@
-﻿* text=auto
-# Normaliza a LF en el repo; Windows convertirá localmente si core.autocrlf=true
-* text=auto eol=lf
-
-# PowerShell scripts en CRLF si prefieres (opcional); yo recomiendo LF también
-*.ps1 text eol=lf
-
-# C/C++ y CMake
-*.cpp text eol=lf
-*.hpp text eol=lf
-*.h   text eol=lf
-*.cmake text eol=lf
-CMakeLists.txt text eol=lf
-
-# Docs
-*.md text eol=lf
-LICENSE text eol=lf
-NOTICE text eol=lf
-CITATION.cff text eol=lf
-
+﻿* text=auto eol=lf
+*.ps1 text eol=crlf
