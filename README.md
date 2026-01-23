@@ -23,5 +23,16 @@ Aura Glow is an edge-first virtual try-on architecture (hair color, makeup, kera
 
 ## Quickstart
 See: docs/QUICKSTART.md
+### Demo output (expected)
+Al ejecutar `scripts/demo.ps1`, el demo genera dos imágenes PPM (P6) para verificación visual:
+
+- `artifacts/out_before.ppm`
+- `artifacts/out_after.ppm`
+
+Salida esperada en consola:
+- `OK: wrote out_before.ppm (PPM)`
+- `OK: wrote out_after.ppm (PPM)`
+
+
 
 
