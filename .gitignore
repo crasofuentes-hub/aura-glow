@@ -20,3 +20,5 @@ rust/target/
 # Backup files
 *.bak
 
+_ci_artifacts/
+_ci_*.txt
