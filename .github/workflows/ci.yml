@@ -37,8 +37,10 @@ jobs:
                  Where-Object { $_.FullName -match "\\Release\\" } |
                  Select-Object -First 1 -ExpandProperty FullName
           if(-not $exe){ throw "auraglow_demo.exe not found under build/ci" }
-          Push-Location (Split-Path -Parent $exe)
-          & $exe
+          Push-Location $exe.DirectoryName
+          & $exe.FullName
+          Get-ChildItem -File out_*.ppm -ErrorAction SilentlyContinue | ForEach-Object { Write-Host ('FOUND: ' + $_.FullName) }
+          Pop-Location
           Pop-Location
 
       - name: Upload artifacts
@@ -54,3 +56,4 @@ jobs:
             build/ci/**/cargo-target/release/*
             build/ci/**/Release/out_before.ppm
             build/ci/**/Release/out_after.ppm
+
