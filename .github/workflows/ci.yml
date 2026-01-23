@@ -52,5 +52,5 @@ jobs:
             build/ci/**/Release/*.exp
             build/ci/**/Release/*.ilk
             build/ci/**/cargo-target/release/*
-            **/out_before.ppm
-            **/out_after.ppm
+            build/ci/**/Release/out_before.ppm
+            build/ci/**/Release/out_after.ppm
