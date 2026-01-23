@@ -1,0 +1,6 @@
+﻿[workspace]
+members = [
+  "auraglow",
+  "auraglow-cli"
+]
+resolver = "2"

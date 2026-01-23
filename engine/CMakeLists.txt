@@ -24,24 +24,23 @@ if(AURAGLOW_ENABLE_RUST)
   set(AURAGLOW_RUST_ROOT "${CMAKE_SOURCE_DIR}/rust")
   set(AURAGLOW_RUST_MANIFEST "${AURAGLOW_RUST_ROOT}/Cargo.toml")
 
-  # Put all Rust build outputs inside the CMake build tree (clean + reproducible)
-  set(AURAGLOW_CARGO_TARGET_DIR "${CMAKE_BINARY_DIR}/cargo-target")
+  # Cargo target dir dentro del build (reproducible, no ensucia rust/target)
+  set(AURAGLOW_CARGO_TARGET "${CMAKE_BINARY_DIR}/cargo-target")
+  file(MAKE_DIRECTORY "${AURAGLOW_CARGO_TARGET}")
 
   if(WIN32)
-    set(AURAGLOW_RUST_LIB "${AURAGLOW_CARGO_TARGET_DIR}/release/auraglow.lib")
+    set(AURAGLOW_RUST_LIB "${AURAGLOW_CARGO_TARGET}/release/auraglow.lib")
   else()
-    set(AURAGLOW_RUST_LIB "${AURAGLOW_CARGO_TARGET_DIR}/release/libauraglow.a")
+    set(AURAGLOW_RUST_LIB "${AURAGLOW_CARGO_TARGET}/release/libauraglow.a")
   endif()
 
   add_custom_command(
     OUTPUT "${AURAGLOW_RUST_LIB}"
-    COMMAND "${CMAKE_COMMAND}" -E make_directory "${AURAGLOW_CARGO_TARGET_DIR}"
     COMMAND "${CMAKE_COMMAND}" -E env
-            "CARGO_TARGET_DIR=${AURAGLOW_CARGO_TARGET_DIR}"
+            "CARGO_TARGET_DIR=${AURAGLOW_CARGO_TARGET}"
             "${CARGO_EXE}" build --manifest-path "${AURAGLOW_RUST_MANIFEST}" --release -p auraglow
-    WORKING_DIRECTORY "${AURAGLOW_RUST_ROOT}"
-    DEPENDS "${AURAGLOW_RUST_MANIFEST}"
-    COMMENT "Building Rust staticlib (auraglow) into ${AURAGLOW_CARGO_TARGET_DIR}"
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    COMMENT "Building Rust staticlib (auraglow) into ${AURAGLOW_CARGO_TARGET}"
     VERBATIM
   )
 
@@ -50,6 +49,11 @@ if(AURAGLOW_ENABLE_RUST)
   add_library(auraglow_rust STATIC IMPORTED GLOBAL)
   set_target_properties(auraglow_rust PROPERTIES IMPORTED_LOCATION "${AURAGLOW_RUST_LIB}")
 
+  
+  target_compile_definitions(auraglow_engine PRIVATE AURAGLOW_ENABLE_RUST=1)
+
   add_dependencies(auraglow_engine auraglow_rust_build)
   target_link_libraries(auraglow_engine PRIVATE auraglow_rust)
+  target_include_directories(auraglow_engine PRIVATE "${CMAKE_SOURCE_DIR}/engine/include")
 endif()
+

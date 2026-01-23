@@ -12,3 +12,11 @@ out/
 
 # Local artifacts (uploaded via GitHub Releases instead)
 artifacts/*.zip
+
+# Rust build outputs
+rust/target/
+
+
+# Backup files
+*.bak
+

@@ -2,6 +2,10 @@
 #include <algorithm>
 #include <cmath>
 
+#if defined(AURAGLOW_ENABLE_RUST)
+  #include "auraglow/engine_rust.h"
+#endif
+
 namespace auraglow {
 
 static inline float clamp01(float v) { return std::max(0.0f, std::min(1.0f, v)); }
@@ -11,7 +15,7 @@ static inline float luminance(float r, float g, float b) {
   return 0.299f*r + 0.587f*g + 0.114f*b; // Rec.601
 }
 
-Status ApplyDyeRgb(FrameView frame, const MaskView& mask, const DyeParams& p) {
+static Status ApplyDyeRgbCpp(FrameView frame, const MaskView& mask, const DyeParams& p) {
   if (!frame.data) return {false, "FrameView.data is null"};
   if (frame.width <= 0 || frame.height <= 0) return {false, "Invalid frame dimensions"};
   if (frame.stride <= 0) return {false, "Invalid frame stride"};
@@ -75,7 +79,61 @@ Status ApplyDyeRgb(FrameView frame, const MaskView& mask, const DyeParams& p) {
     }
   }
 
-  return {true, "OK"};
+  return {true, "OK (cpp)"};
+}
+
+#if defined(AURAGLOW_ENABLE_RUST)
+static const char* RustCodeToMsg(int32_t code) {
+  switch(code) {
+    case 0:  return "OK (rust)";
+    case -1: return "Rust: null pointer input";
+    case -2: return "Rust: invalid dimensions";
+    case -3: return "Rust: mask/frame size mismatch";
+    case -4: return "Rust: invalid stride";
+    case -5: return "Rust: overflow guard";
+    case -6: return "Rust: frame stride < width*4";
+    case -7: return "Rust: mask stride < width";
+    default: return "Rust: unknown error";
+  }
+}
+#endif
+
+Status ApplyDyeRgb(FrameView frame, const MaskView& mask, const DyeParams& p) {
+#if defined(AURAGLOW_ENABLE_RUST)
+  // Llamada Rust primero (FFI)
+  auraglow_frame_view fv;
+  fv.data   = frame.data;
+  fv.width  = frame.width;
+  fv.height = frame.height;
+  fv.stride = frame.stride;
+
+  auraglow_mask_view mv;
+  mv.data   = mask.data;
+  mv.width  = mask.width;
+  mv.height = mask.height;
+  mv.stride = mask.stride;
+
+  auraglow_dye_params dp;
+  dp.dye.r = p.dye.r;
+  dp.dye.g = p.dye.g;
+  dp.dye.b = p.dye.b;
+  dp.intensity     = p.intensity;
+  dp.preserve_luma = p.preserve_luma;
+
+  auraglow_status st = auraglow_apply_dye_rgba(fv, mv, dp);
+  if (st.ok) {
+    return {true, "OK (rust)"};
+  }
+
+  // Si Rust falla, cae al algoritmo C++ (para no romper el demo)
+  Status fb = ApplyDyeRgbCpp(frame, mask, p);
+  if(!fb.ok) {
+    return {false, std::string(RustCodeToMsg(st.code)) + " | fallback failed: " + fb.message};
+  }
+  return {true, std::string(RustCodeToMsg(st.code)) + " | fallback OK (cpp)"};
+#else
+  return ApplyDyeRgbCpp(frame, mask, p);
+#endif
 }
 
 } // namespace auraglow
